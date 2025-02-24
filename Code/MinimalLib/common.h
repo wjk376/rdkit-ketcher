@@ -681,6 +681,23 @@ std::string molblock_helper(const RWMol &mol, const char *details_json,
   return MolToMolBlock(*molPtr, includeStereo, -1, kekulize, forceV3000);
 }
 
+void get_ringinfo_json(const RWMol &mol, rj::Value &obj, rj::Document &doc) {
+  const auto ringInfo = mol.getRingInfo();
+
+  rj::Value rjNumRings(ringInfo->numRings());
+  obj.AddMember("numRings", rjNumRings, doc.GetAllocator());
+
+  rj::Value rjAtomRings(rj::kArrayType);
+  for (const auto &ringAtoms : ringInfo->atomRings()) {
+    rj::Value inner(rj::kArrayType);
+    for (const auto atomIdx : ringAtoms) {
+      inner.PushBack(atomIdx, doc.GetAllocator());
+    }
+    rjAtomRings.PushBack(inner, doc.GetAllocator());
+  }
+  obj.AddMember("atomRings", rjAtomRings, doc.GetAllocator());
+}
+
 void get_sss_json(const ROMol &d_mol, const ROMol &q_mol,
                   const MatchVectType &match, rj::Value &obj,
                   rj::Document &doc) {

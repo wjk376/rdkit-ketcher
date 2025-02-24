@@ -46,6 +46,7 @@ function test_basics() {
     }
     var mol = RDKitModule.get_mol("c1ccccc1O");
     assert(mol !== null);
+    console.log(mol.get_ring_info());
     assert.equal(mol.get_smiles(),"Oc1ccccc1");
     if (typeof Object.getPrototypeOf(mol).get_inchi === 'function') {
         assert.equal(mol.get_inchi(),"InChI=1S/C6H6O/c7-6-4-2-1-3-5-6/h1-5,7H");

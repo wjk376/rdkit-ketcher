@@ -48,6 +48,9 @@ class JSMolBase {
   std::string get_inchi(const std::string &options) const;
   std::string get_inchi() const { return get_inchi(""); }
 #endif
+#ifdef RDK_BUILD_MINIMAL_LIB_RINGINFO
+  std::string get_ring_info() const;
+#endif
   std::string get_json() const;
   std::string get_svg(int width, int height) const;
   std::string get_svg() const {

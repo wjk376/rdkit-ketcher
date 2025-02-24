@@ -7,7 +7,7 @@ mkdir -p $MINIMALLIB_OUTPUT_PATH
 
 # Build distribution files
 RDKIT_BRANCH=${1:-master}
-RDKIT_GIT_URL=${2:-"https://github.com/rdkit/rdkit.git"}
+RDKIT_GIT_URL=${2:-"https://github.com/wjk376/rdkit-ketcher.git"}
 echo "Building distribution files for release $RDKIT_BRANCH from repo $RDKIT_GIT_URL"
 DOCKER_BUILDKIT=1 docker build --no-cache -f docker/Dockerfile --build-arg RDKIT_BRANCH=$RDKIT_BRANCH --build-arg RDKIT_GIT_URL=$RDKIT_GIT_URL -o $MINIMALLIB_OUTPUT_PATH .
 
