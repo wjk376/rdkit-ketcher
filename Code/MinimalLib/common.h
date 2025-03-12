@@ -681,7 +681,8 @@ std::string molblock_helper(const RWMol &mol, const char *details_json,
   return MolToMolBlock(*molPtr, includeStereo, -1, kekulize, forceV3000);
 }
 
-void get_ringinfo_json(const RWMol &mol, rj::Value &obj, rj::Document &doc) {
+#ifdef RDK_BUILD_MINIMAL_LIB_KETCHER
+void get_ring_info_json(const RWMol &mol, rj::Value &obj, rj::Document &doc) {
   const auto ringInfo = mol.getRingInfo();
 
   rj::Value rjNumRings(ringInfo->numRings());
@@ -696,7 +697,18 @@ void get_ringinfo_json(const RWMol &mol, rj::Value &obj, rj::Document &doc) {
     rjAtomRings.PushBack(inner, doc.GetAllocator());
   }
   obj.AddMember("atomRings", rjAtomRings, doc.GetAllocator());
+
+  rj::Value rjBondRings(rj::kArrayType);
+  for (const auto &ringBonds : ringInfo->bondRings()) {
+    rj::Value inner(rj::kArrayType);
+    for (const auto bondIdx : ringBonds) {
+      inner.PushBack(bondIdx, doc.GetAllocator());
+    }
+    rjBondRings.PushBack(inner, doc.GetAllocator());
+  }
+  obj.AddMember("bondRings", rjBondRings, doc.GetAllocator());
 }
+#endif
 
 void get_sss_json(const ROMol &d_mol, const ROMol &q_mol,
                   const MatchVectType &match, rj::Value &obj,

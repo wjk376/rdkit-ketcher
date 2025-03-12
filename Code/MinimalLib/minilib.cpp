@@ -17,9 +17,7 @@
 #include <GraphMol/RDKitBase.h>
 #include <GraphMol/MolPickler.h>
 #include <GraphMol/Chirality.h>
-#ifdef RDK_BUILD_MINIMAL_LIB_RINGINFO
 #include <GraphMol/RingInfo.h>
-#endif
 #include <GraphMol/SmilesParse/SmilesParse.h>
 #include <GraphMol/SmilesParse/SmilesJSONParsers.h>
 #include <GraphMol/SmilesParse/SmartsWrite.h>
@@ -189,15 +187,29 @@ std::string JSMolBase::get_substruct_match(const JSMolBase &q) const {
   return res;
 }
 
-#ifdef RDK_BUILD_MINIMAL_LIB_RINGINFO
+#ifdef RDK_BUILD_MINIMAL_LIB_KETCHER
 std::string JSMolBase::get_ring_info() const {
   rj::Document doc;
   doc.SetObject();
-  MinimalLib::get_ringinfo_json(get(), doc, doc);
+  MinimalLib::get_ring_info_json(get(), doc, doc);
   rj::StringBuffer buffer;
   rj::Writer<rj::StringBuffer> writer(buffer);
   doc.Accept(writer);
   return buffer.GetString();
+}
+
+std::string JSMolBase::get_atom_symbol(const int idx) const {
+  std::string res = "";
+  if (idx < 0) {
+    return res;
+  }
+  try {
+    auto atom = get().getAtomWithIdx(idx);
+    res = atom->getSymbol();
+  } catch (...) {
+    res = "";
+  }
+  return res;
 }
 #endif
 

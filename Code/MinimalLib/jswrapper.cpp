@@ -589,6 +589,10 @@ EMSCRIPTEN_BINDINGS(RDKit_minimal) {
                     get_avalon_fp_as_uint8array))
 #endif
 #endif
+#ifdef RDK_BUILD_MINIMAL_LIB_KETCHER
+      .function("get_ring_info", &JSMolBase::get_ring_info)
+      .function("get_atom_symbol", &JSMolBase::get_atom_symbol)
+#endif
       .function("get_substruct_match", &JSMolBase::get_substruct_match)
       .function("get_substruct_matches", &JSMolBase::get_substruct_matches)
       .function("get_descriptors", &JSMolBase::get_descriptors)

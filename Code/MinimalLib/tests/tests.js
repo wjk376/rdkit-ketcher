@@ -47,6 +47,8 @@ function test_basics() {
     var mol = RDKitModule.get_mol("c1ccccc1O");
     assert(mol !== null);
     console.log(mol.get_ring_info());
+    assert.equal(mol.get_atom_symbol(0), "C");
+    assert.equal(mol.get_atom_symbol(10), "");
     assert.equal(mol.get_smiles(),"Oc1ccccc1");
     if (typeof Object.getPrototypeOf(mol).get_inchi === 'function') {
         assert.equal(mol.get_inchi(),"InChI=1S/C6H6O/c7-6-4-2-1-3-5-6/h1-5,7H");
@@ -206,6 +208,25 @@ function test_basics() {
     assert(svg2.search("svg")>0);
     assert(svg.search("#FF7F7F")<0);
     assert(svg2.search("#FF7F7F")>0);
+}
+
+function test_molblock_to_smiles() {
+    var molblock = `
+  -INDIGO-03042516222D
+
+  5  4  0  0  1  0  0  0  0  0999 V2000
+   15.4372   -6.4375    0.0000 *   0  0  0  0  0  0  0  0  0  0  0  0
+   16.3033   -6.9375    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+   17.1693   -6.4375    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+   18.0353   -6.9375    0.0000 *   0  0  0  0  0  0  0  0  0  0  0  0
+   17.1693   -5.4375    0.0000 *   0  0  0  0  0  0  0  0  0  0  0  0
+  1  2  1  0  0  0  0
+  2  3  1  0  0  0  0
+  3  4  1  0  0  0  0
+  3  5  1  1  0  0  0
+M  END`;
+    var smi = RDKitModule.molblock_to_smiles(molblock);
+    assert(smi === "*C[C@H](*)*");
 }
 
 function test_molblock_nostrict() {
@@ -3768,6 +3789,7 @@ initRDKitModule().then(function(instance) {
     test_basics();
     test_molblock_nostrict();
     test_molblock_rgp();
+    test_molblock_to_smiles();
     test_get_aromatic_kekule_form();
     test_sketcher_services();
     test_sketcher_services2();
